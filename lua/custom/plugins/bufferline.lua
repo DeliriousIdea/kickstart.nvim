@@ -4,7 +4,8 @@ return {
   -- Add custom logic to make tab go to the next buffer, then
   -- wrap back around to the first when hitting tab on the last one
   keys = {
-    {"<Tab>", "<cmd>BufferLineMoveNext<cr>", desc = "Next Buffer"}
+    {"<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", desc = "Next Buffer"},
+      {"<Tab>", "<cmd>BufferLineCycleNext<cr>", desc = "Next Buffer"},
   },
   config = function()
     require("bufferline").setup{
@@ -14,10 +15,9 @@ return {
 	hover =  {
 	  enabled = true,
 	  delay = 250,
-	}
+	},
       },
     }
   end,
   -- Custom logic
-  vim.keymap.set('n','<Tab>', ':BufferLineMoveNext<CR>', { silent = true })
 }
