@@ -286,8 +286,8 @@ vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
 -- Line shifting
-vim.keymap.set('n', '<C-j>', ':m +1<cr>',{ silent = true})
-vim.keymap.set('n', '<C-k>', ':m -2<cr>',{ silent = true})
+vim.keymap.set({'n', 'v'}, '<C-j>', ':m +1<cr>',{ silent = true})
+vim.keymap.set({'n', 'v'}, '<C-k>', ':m -2<cr>',{ silent = true})
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -322,6 +322,11 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+      },
+    },
+    pickers = {
+      colorscheme = {
+        enable_preview = true
       },
     },
   },
@@ -373,7 +378,7 @@ vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
     winblend = 10,
-    previewer = false,
+    previewer = true, -- disable if laggy
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
