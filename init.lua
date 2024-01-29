@@ -326,14 +326,13 @@ vim.api.nvim_create_autocmd('VimLeavePre', {
 
   -- Check if it exists with nil
   if configFile ~= nil then
-    io.output(configFile)
     jsonTheme = vim.json.encode(jsonTheme)
     if jsonTheme ~= nil then
-      io.write(jsonTheme)
+        configFile:write(jsonTheme)
     end
-    io.close(configFile)
+      configFile:close()
   end
-end,
+end
 })
 
 -- [[ Apply theme on load ]]
@@ -343,17 +342,16 @@ vim.api.nvim_create_autocmd('VimEnter', {
 
   -- Check if it exists with nil
   if configFile ~= nil then
-    io.input(configFile)
-    local theme = io.read()
+    local theme = configFile:read() -- 1 line of code for 2
     theme = vim.json.decode(theme)
       if theme ~= nil then
-        for key, value in pairs(theme) do
+        for _, value in pairs(theme) do
           vim.cmd.colorscheme(value)
         end
       end
-    io.close(configFile)
+      configFile:close()
   end
-end,
+end
 })
 
 -- [[ Configure Telescope ]]
