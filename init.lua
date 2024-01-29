@@ -160,12 +160,12 @@ require('lazy').setup({
   --     vim.cmd.colorscheme 'onedark'
   --   end,
   -- },
-  {
-    "nyoom-engineering/oxocarbon.nvim",
-    config = function()
-      vim.cmd.colorscheme 'oxocarbon'
-    end,
-  },
+  -- {
+  --   "nyoom-engineering/oxocarbon.nvim",
+  --   config = function()
+  --     vim.cmd.colorscheme 'oxocarbon'
+  --   end,
+  -- },
 
   {
     -- Set lualine as statusline
@@ -174,7 +174,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        -- theme = 'onedark',
         component_separators = '|',
         section_separators = '',
       },
@@ -286,8 +286,6 @@ vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
 -- Line shifting
-vim.keymap.set({'n', 'v'}, '<C-j>', ':m +1<cr>',{ silent = true})
-vim.keymap.set({'n', 'v'}, '<C-k>', ':m -2<cr>',{ silent = true})
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
