@@ -313,13 +313,15 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
--- [[ Apply theme on load ]]
 
 -- [[ Save Theme on exit ]]
 -- FINALLY FUCKING WORKS GOD DAMN
 vim.api.nvim_create_autocmd('VimLeavePre', {
   callback = function()
   local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
+  -- Right now, if the theme is default, it causes a crash on the event
+  -- Since the editor is already closing, this shouldn't be a problem but it lacks grace
+  -- and I'm not sure if it'll cause corrupt on other files
   local jsonTheme = {vim.api.nvim_eval("g:colors_name")} -- Setup
 
   -- Check if it exists with nil
@@ -329,6 +331,26 @@ vim.api.nvim_create_autocmd('VimLeavePre', {
     if jsonTheme ~= nil then
       io.write(jsonTheme)
     end
+    io.close(configFile)
+  end
+end,
+})
+
+-- [[ Apply theme on load ]]
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function ()
+  local configFile = io.open(ConfigThemeLocation, "r") -- Load the file
+
+  -- Check if it exists with nil
+  if configFile ~= nil then
+    io.input(configFile)
+    local theme = io.read()
+    theme = vim.json.decode(theme)
+      if theme ~= nil then
+        for key, value in pairs(theme) do
+          vim.cmd.colorscheme(value)
+        end
+      end
     io.close(configFile)
   end
 end,
