@@ -1,35 +1,32 @@
+-- Change the directory if you wish to move the file somewhere else. For the purpose of this file,
+-- it will not create a new config file. You just need to add it, the as soon as a theme is loaded
+-- with the keybind, it will save the theme name
 ConfigThemeLocation = vim.fs.normalize("~\\AppData\\local\\nvim\\lua\\custom\\themeConfig.json")
-
----Loads the theme from the json file. Returns empty if file not found, or if it is also empty
----@return string
-local function loadTheme()
-  local configFile = io.open(ConfigThemeLocation, "r") -- Load the file
-  local jsonTheme = {} -- Setup
-  local savedTheme = ""
-
-  -- Check if it exists with nil
-  if configFile ~= nil then
-    io.input(configFile)
-    jsonTheme = io.read("*a")
-    jsonTheme = vim.json.decode(jsonTheme)
-    if jsonTheme ~= nil then
-      for _, value in pairs(jsonTheme) do
-        savedTheme = value
-      end
-    end
-  end
-  return savedTheme
-end
 
 local function chooseTheme()
   require('telescope.builtin').colorscheme(require('telescope.themes').get_dropdown({
     enable_preview = true,
-    winblend = 10
+    winblend = 10,
   }))
-  local theme = loadTheme()
-  print(theme)
 end
 
+---Saves the current theme to a config file
+-- local function saveTheme()
+--   local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
+--   local jsonTheme = {vim.api.nvim_eval("g:colors_name")} -- Setup
+--
+--   -- Check if it exists with nil
+--   if configFile ~= nil then
+--     -- io.output(configFile)
+--     jsonTheme = vim.json.encode(jsonTheme)
+--     if jsonTheme ~= nil then
+--       io.write(jsonTheme)
+--     end
+--     io.close(configFile)
+--   end
+-- end
+
 return {
-  vim.keymap.set('n', '<leader>b', chooseTheme, { desc = 'Themes' })
+  vim.keymap.set('n', '<leader>b', chooseTheme, { desc = 'Themes' }),
+  -- saveTheme(),
 }

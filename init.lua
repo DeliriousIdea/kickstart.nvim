@@ -1,3 +1,6 @@
+-- [[ Globals ]]
+ConfigThemeLocation = vim.fs.normalize("~\\AppData\\local\\nvim\\lua\\custom\\themeConfig.json")
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
@@ -242,8 +245,6 @@ require('lazy').setup({
 
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
-
---
 vim.o.sessionoptions = "blank,buffers,curdir,folds,tabpages,winsize,winpos,terminal,localoptions"
 
 -- Set highlight on search
@@ -312,6 +313,27 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- [[ Apply theme on load ]]
+
+-- [[ Save Theme on exit ]]
+-- FINALLY FUCKING WORKS GOD DAMN
+vim.api.nvim_create_autocmd('VimLeavePre', {
+  callback = function()
+  local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
+  local jsonTheme = {vim.api.nvim_eval("g:colors_name")} -- Setup
+
+  -- Check if it exists with nil
+  if configFile ~= nil then
+    io.output(configFile)
+    jsonTheme = vim.json.encode(jsonTheme)
+    if jsonTheme ~= nil then
+      io.write(jsonTheme)
+    end
+    io.close(configFile)
+  end
+end,
+})
+
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
@@ -320,11 +342,6 @@ require('telescope').setup {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
-      },
-    },
-    pickers = {
-      colorscheme = {
-        enable_preview = true
       },
     },
   },
