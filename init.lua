@@ -177,7 +177,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        -- theme = 'onedark',
+        theme = 'auto',
         component_separators = '|',
         section_separators = '',
       },
@@ -285,8 +285,9 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
--- [[ Basic Keymaps ]]
--- Line shifting
+-- [[ Basic Keymaps and Settings]]
+-- Session options that autosession recommends. Remove if it breaks anything.
+vim.o.sessionoptions="blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -297,10 +298,11 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+-- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
+-- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+-- vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+-- vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+-- Will try out folke/trouble for a bit, can't find if vim.diagnostics can apply quickfixes, like auto includes
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -315,7 +317,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 
 -- [[ Save Theme on exit ]]
--- FINALLY FUCKING WORKS GOD DAMN
 vim.api.nvim_create_autocmd('VimLeavePre', {
   callback = function()
   local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
@@ -336,6 +337,9 @@ end
 })
 
 -- [[ Apply theme on load ]]
+-- Doesn't apply theming to buffline or lualine. They might be loading before the theme is being applied
+-- TODO:
+-- Figure that out
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function ()
   local configFile = io.open(ConfigThemeLocation, "r") -- Load the file
@@ -678,6 +682,14 @@ cmp.setup {
     { name = 'path' },
   },
 }
+
+--[[
+--
+-- TODO:
+-- Autosession only saves cwd to a list, I don't think it'll save/ open buffers
+-- bufferline has groups that can be toggled, I may be able to hook into autosessions pre-save hook
+-- and trigger bufferline toggles based on the cwd change
+--]]
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
