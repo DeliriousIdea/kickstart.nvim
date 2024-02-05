@@ -29,6 +29,7 @@ require('lazy').setup({
 
       -- Adds a number of user-friendly snippets
       'rafamadriz/friendly-snippets',
+      'SirVer/ultisnips', -- Several lsp snippets
     },
   },
 
@@ -51,7 +52,6 @@ require('lazy').setup({
       },
     },
   },
-
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',

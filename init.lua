@@ -5,28 +5,28 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- [[ Install Lazy vim ]]
-require('lazy-bootstrap')
+require 'lazy-bootstrap'
 
 -- [[ Configure plugins ]]
-require('lazy-plugins')
+require 'lazy-plugins'
 
 -- [[ Setting options ]]
-require('options')
+require 'options'
 
 -- [[ Keymaps ]]
-require('keymaps')
+require 'keymaps'
 
 -- [[ Telescope Setup ]]
-require('telescope-setup')
+require 'telescope-setup'
 
 -- [[ Treesitter Setup ]]
-require('treesitter-setup')
+require 'treesitter-setup'
 
 -- [[ Configure LSP ]]
-require('lsp-setup')
+require 'lsp-setup'
 
 -- [[ Configure nvim-cmp ]]
-require('cmp-setup')
+require 'cmp-setup'
 
 
 -- The line beneath this is called `modeline`. See `:help modeline`

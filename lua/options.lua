@@ -14,46 +14,52 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ I used this to persist theme changes using telescope preview
 -- [[ Save Theme on exit ]]
--- vim.api.nvim_create_autocmd('VimLeavePre', {
---   callback = function()
---     local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
---     -- Right now, if the theme is default, it causes a crash on the event
---     -- Since the editor is already closing, this shouldn't be a problem but it lacks grace
---     -- and I'm not sure if it'll cause corrupt on other files
---     local jsonTheme = { vim.api.nvim_eval("g:colors_name") } -- Setup
---
---     -- Check if it exists with nil
---     if configFile ~= nil then
---       jsonTheme = vim.json.encode(jsonTheme)
---       if jsonTheme ~= nil then
---         configFile:write(jsonTheme)
---       end
---       configFile:close()
---     end
---   end
--- })
---
+vim.api.nvim_create_autocmd('VimLeavePre', {
+    callback = function()
+        local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
+        -- Right now, if the theme is default, it causes a crash on the event
+        -- Since the editor is already closing, this shouldn't be a problem but it lacks grace
+        -- and I'm not sure if it'll cause corrupt on other files
+        local jsonTheme = { vim.api.nvim_eval("g:colors_name") } -- Setup
+
+        -- Check if it exists with nil
+        if configFile ~= nil then
+            jsonTheme = vim.json.encode(jsonTheme)
+            if jsonTheme ~= nil then
+                configFile:write(jsonTheme)
+            end
+            configFile:close()
+        end
+    end
+})
+
 -- -- [[ Apply theme on load ]]
 -- -- Doesn't apply theming to buffline or lualine. They might be loading before the theme is being applied
 -- -- TODO:
 -- -- Figure that out
--- vim.api.nvim_create_autocmd('VimEnter', {
---   callback = function()
---     local configFile = io.open(ConfigThemeLocation, "r") -- Load the file
---
---     -- Check if it exists with nil
---     if configFile ~= nil then
---       local theme = configFile:read() -- 1 line of code for 2
---       theme = vim.json.decode(theme)
---       if theme ~= nil then
---         for _, value in pairs(theme) do
---           vim.cmd.colorscheme(value)
---         end
---       end
---       configFile:close()
---     end
---   end
--- })
+vim.api.nvim_create_autocmd('VimEnter', {
+    callback = function()
+        local configFile = io.open(ConfigThemeLocation, "r") -- Load the file
+
+        -- Check if it exists with nil
+        if configFile ~= nil then
+            local theme = configFile:read() -- 1 line of code for 2
+            theme = vim.json.decode(theme)
+            if theme ~= nil then
+                for _, value in pairs(theme) do
+                    vim.cmd.colorscheme(value)
+                end
+            end
+            configFile:close()
+        end
+    end
+})
+-- Delay the setup functions for lualine and bufferline
+vim.defer_fn(function()
+    require('lualine').setup()
+    require('bufferline').setup()
+end, 100)
+
 
 vim.o.hlsearch = false
 
@@ -97,7 +103,6 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
-vim.cmd.colorscheme 'melange'
 
 -- [[ Basic Keymaps and Settings]]
 -- Session options that autosession recommends. Remove if it breaks anything.
