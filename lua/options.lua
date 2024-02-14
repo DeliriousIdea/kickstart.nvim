@@ -1,5 +1,11 @@
 -- [[ Globals ]]
-ConfigThemeLocation = vim.fs.normalize("~\\AppData\\local\\nvim\\lua\\custom\\themeConfig.json")
+local ConfigThemeLocation
+if vim.loop.os_uname().sysname == 'Linux' then
+    ConfigThemeLocation = vim.fs.normalize('~/.config/nvim/lua/custom/themeConfig.json')
+else
+    ConfigThemeLocation = vim.fs.normalize('$APPDATA$/local/nvim/lua/custom/themeConfig.json')
+end
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -12,14 +18,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 
--- [[ I used this to persist theme changes using telescope preview
 -- [[ Save Theme on exit ]]
 vim.api.nvim_create_autocmd('VimLeavePre', {
     callback = function()
-        local configFile = io.open(ConfigThemeLocation, "w+") -- Load the file
-        -- Right now, if the theme is default, it causes a crash on the event
-        -- Since the editor is already closing, this shouldn't be a problem but it lacks grace
-        -- and I'm not sure if it'll cause corrupt on other files
+        local configFile = io.open(ConfigThemeLocation, "w+")    -- Load the file
         local jsonTheme = { vim.api.nvim_eval("g:colors_name") } -- Setup
 
         -- Check if it exists with nil
@@ -29,6 +31,8 @@ vim.api.nvim_create_autocmd('VimLeavePre', {
                 configFile:write(jsonTheme)
             end
             configFile:close()
+        else
+            print("not found")
         end
     end
 })
@@ -51,12 +55,14 @@ vim.api.nvim_create_autocmd('VimEnter', {
                 end
             end
             configFile:close()
+        else
+            print("Not found")
         end
     end
 })
 -- Delay the setup functions for lualine and bufferline
 vim.defer_fn(function()
-    require('lualine').setup()
+    require('lualine').setup({})
     require('bufferline').setup()
 end, 100)
 
